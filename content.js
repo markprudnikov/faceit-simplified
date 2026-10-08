@@ -3,6 +3,7 @@
 
   const attribute = "data-faceit-simplified";
   let enabled = false;
+  let loaded = false;
   let settingsRevision = 0;
 
   function updatePage() {
@@ -18,12 +19,14 @@
       root.removeAttribute(attribute);
     }
     globalThis.FaceitSimplifiedCalendar.update(active);
+    globalThis.FaceitSimplifiedToggle.update(loaded && matchmaking, enabled);
   }
 
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "local" || !Object.hasOwn(changes, "enabled")) return;
     settingsRevision += 1;
     enabled = changes.enabled.newValue !== false;
+    loaded = true;
     updatePage();
   });
 
@@ -31,6 +34,7 @@
   chrome.storage.local.get({ enabled: true }).then(settings => {
     if (settingsRevision !== initialRevision) return;
     enabled = settings.enabled !== false;
+    loaded = true;
     updatePage();
   }).catch(() => {
     // Leave the original page visible when preferences cannot be read.

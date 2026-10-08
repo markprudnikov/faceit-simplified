@@ -13,7 +13,7 @@
     {
       "matches": ["https://www.faceit.com/*", "https://faceit.com/*"],
       "css": ["matchmaking.css"],
-      "js": ["elo-core.js", "elo-calendar.js", "content.js"],
+      "js": ["elo-core.js", "elo-calendar.js", "page-toggle.js", "content.js"],
       "run_at": "document_start"
     }
   ]

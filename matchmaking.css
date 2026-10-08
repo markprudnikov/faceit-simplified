@@ -27,3 +27,11 @@ html[data-faceit-simplified="on"] #fsi-elo-calendar {
 html:not([data-faceit-simplified="on"]) #fsi-elo-calendar {
   display: none !important;
 }
+
+/* The on/off switch sits left of the anti-cheat button in both modes. Its
+   parent becomes a row so the switch never wraps onto its own line. */
+:has(> #fsi-simplify-toggle) {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

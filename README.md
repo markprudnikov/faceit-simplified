@@ -1,6 +1,6 @@
 # FaceIT simplified
 
-Version 0.2.2 adds a seven-day Elo calendar after the skill-rating panel. Every other widget in that row (missions, campaigns, league registration, season passes, and any promotion FACEIT adds later) is hidden automatically, as is the entire Ladders section. The extension popup has one switch to restore the original page.
+Version 0.2.2 adds a seven-day Elo calendar after the skill-rating panel. Every other widget in that row (missions, campaigns, league registration, season passes, and any promotion FACEIT adds later) is hidden automatically, as is the entire Ladders section. A **Simplified** switch next to the anti-cheat icon in the Play header, and the same switch in the extension popup, restore the original page. Both share one locally stored setting.
 
 ## Elo calendar
 
