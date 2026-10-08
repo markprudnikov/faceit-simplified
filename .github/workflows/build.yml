@@ -1,0 +1,77 @@
+name: Build extension
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version
+        id: version
+        run: echo "version=$(jq -r .version manifest.json)" >> "$GITHUB_OUTPUT"
+
+      # Ships every tracked file except dotfiles (.github, .gitignore, ...) and Markdown.
+      - name: Stage extension files
+        run: |
+          mkdir -p dist/faceit-simplified
+          git ls-files -z | grep -zvE '^\.|\.md$' | xargs -0 cp --parents -t dist/faceit-simplified
+
+      - name: Check extension
+        run: node .github/scripts/check-extension.mjs dist/faceit-simplified
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: faceit-simplified-${{ steps.version.outputs.version }}
+          path: dist/faceit-simplified/
+          if-no-files-found: error
+
+  # Publishes a release whenever master carries a manifest version that has no release yet.
+  # The asset name is stable so releases/latest/download/faceit-simplified.zip always works.
+  release:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TAG: v${{ needs.build.outputs.version }}
+    steps:
+      - name: Check for existing release
+        id: existing
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release $TAG already exists; bump manifest.json version to publish a new one."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/download-artifact@v4
+        if: steps.existing.outputs.exists != 'true'
+        with:
+          name: faceit-simplified-${{ needs.build.outputs.version }}
+          path: faceit-simplified
+
+      - name: Publish release
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          (cd faceit-simplified && zip -qr ../faceit-simplified.zip .)
+          gh release create "$TAG" faceit-simplified.zip \
+            --target "$GITHUB_SHA" \
+            --title "FaceIT simplified $TAG" \
+            --generate-notes

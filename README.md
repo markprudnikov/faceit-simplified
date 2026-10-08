@@ -25,13 +25,17 @@ Each action makes at most four history requests. If more are needed, use **Load 
 
 ## Install or update in Chrome
 
-1. Extract `faceit-simplified.zip` if you downloaded the archive.
+1. Download [`faceit-simplified.zip`](https://github.com/markprudnikov/faceit-simplify/releases/latest/download/faceit-simplified.zip) from the [latest release](https://github.com/markprudnikov/faceit-simplify/releases/latest) and extract it.
 2. Open `chrome://extensions` in Chrome.
 3. For a first installation, enable **Developer mode**, select **Load unpacked**, and choose the `faceit-simplified` folder containing `manifest.json`.
 4. For an update, replace the files in the previously loaded folder and click **Reload** on the extension's card.
 5. Refresh your open FACEIT tab.
 
 Chrome 120 or later is required. This is a local development extension, not a Chrome Web Store release.
+
+## Releasing
+
+GitHub Actions (`.github/workflows/build.yml`) checks and packages the extension on every push and pull request; the packaged folder is attached to each run as a build artifact. When `master` contains a `manifest.json` version that has no release yet, the workflow publishes release `v<version>` with `faceit-simplified.zip` attached. To ship an update, bump `version` in `manifest.json` and push to `master`.
 
 ## Scope and data
 
