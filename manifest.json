@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "FaceIT simplified",
+  "version": "0.2.2",
+  "description": "A cleaner FACEIT matchmaking page with a seven-day Elo calendar and less clutter.",
+  "minimum_chrome_version": "120",
+  "permissions": ["storage"],
+  "action": {
+    "default_title": "FaceIT simplified",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.faceit.com/*", "https://faceit.com/*"],
+      "css": ["matchmaking.css"],
+      "js": ["elo-core.js", "elo-calendar.js", "content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
