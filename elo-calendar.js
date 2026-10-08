@@ -17,6 +17,8 @@
     .range{color:#bcbcbc;font-size:11px;white-space:nowrap}
     .weekly{font-size:11px;font-weight:650;white-space:nowrap;font-variant-numeric:tabular-nums}
     .weekly[data-sign="gain"]{color:var(--elo-gain)}.weekly[data-sign="loss"]{color:var(--elo-loss)}
+    .count{color:#bcbcbc;font-size:11px;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .count::before{content:"·";color:#6f6f6f;margin-right:7px}
     .actions{display:flex;gap:3px;margin-left:auto}
     .nav{border:1px solid #383838;background:#222;border-radius:5px;min-width:25px;height:26px;padding:0 5px;font-size:17px}
     .nav:disabled{opacity:.35;cursor:default}.nav:hover:not(:disabled){background:#383838}
@@ -67,7 +69,7 @@
     const shadow = host.attachShadow({ mode: "open" });
     // Only static extension-owned markup is used here. API values use textContent.
     shadow.innerHTML = `<style>${css}</style><section class="calendar">
-      <div class="top"><h2>Elo gain</h2><div class="period"><span class="range"></span><span class="weekly" aria-live="polite"></span></div><div class="actions">
+      <div class="top"><h2>Elo gain</h2><div class="period"><span class="range"></span><span class="weekly" aria-live="polite"></span><span class="count" aria-live="polite"></span></div><div class="actions">
         <button class="nav previous" type="button" aria-label="Previous week" title="Previous week">‹</button>
         <button class="nav next" type="button" aria-label="Next week" title="Next week">›</button>
         <button class="nav refresh" type="button" aria-label="Refresh Elo history" title="Refresh Elo history">↻</button>
@@ -79,7 +81,7 @@
       <button class="text-button more" type="button" hidden>Load more matches</button>
     </section>`;
     const get = selector => shadow.querySelector(selector);
-    const ui = Object.fromEntries(["range", "weekly", "previous", "next", "refresh", "days", "details", "bottom", "current", "status", "more"].map(key => [key, get(`.${key}`)]));
+    const ui = Object.fromEntries(["range", "weekly", "count", "previous", "next", "refresh", "days", "details", "bottom", "current", "status", "more"].map(key => [key, get(`.${key}`)]));
     let today = Core.dayKey(Date.now(), timeZone);
     let week = Core.weekStart(today);
     let selected = null;
@@ -114,11 +116,16 @@
       ui.range.textContent = `${dateLabel(week, { day: "numeric", month: "short" })} – ${dateLabel(end, { day: "numeric", month: "short" })}`;
       ui.range.title = `${week} – ${end}`;
       const elapsedDays = days.filter(day => day <= today);
-      const weekKnown = elapsedDays.every(day => history?.covers(day) && !summaries.get(day)?.missing);
+      const weekCovered = elapsedDays.every(day => history?.covers(day));
+      const weekKnown = weekCovered && elapsedDays.every(day => !summaries.get(day)?.missing);
       const weekNet = elapsedDays.reduce((total, day) => total + (summaries.get(day)?.net || 0), 0);
+      // Sum of the daily counts, so the weekly total always matches the day cells.
+      const weekMatches = elapsedDays.reduce((total, day) => total + (summaries.get(day)?.matches || 0), 0);
       ui.weekly.textContent = weekKnown ? `${signed(weekNet)} Elo` : "… Elo";
       ui.weekly.dataset.sign = weekKnown && weekNet !== 0 ? (weekNet > 0 ? "gain" : "loss") : "neutral";
       ui.weekly.setAttribute("aria-label", weekKnown ? `Net Elo for this week: ${signed(weekNet)}` : "Weekly Elo total: history incomplete");
+      ui.count.textContent = weekCovered ? `${weekMatches} ${weekMatches === 1 ? "match" : "matches"}` : "… matches";
+      ui.count.setAttribute("aria-label", weekCovered ? `Matches this week: ${weekMatches}` : "Weekly match count: history incomplete");
       ui.previous.disabled = busy;
       ui.next.disabled = busy || week >= Core.weekStart(today);
       ui.refresh.disabled = busy;

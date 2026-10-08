@@ -4,7 +4,7 @@ Version 0.2.2 adds a seven-day Elo calendar after the skill-rating panel, replac
 
 ## Elo calendar
 
-- **Elo gain** heading, with the displayed week’s net Elo immediately after its date range. The current week shows its total so far. Incomplete weeks show `… Elo`.
+- **Elo gain** heading, with the displayed week’s net Elo immediately after its date range, followed by the number of matches played that week. The current week shows its totals so far. Incomplete weeks show `… Elo` and `… matches`.
 - One Monday–Sunday row, with previous/next week controls and a **This week** shortcut.
 - Daily net Elo equals the sum of `eloDelta` for matches **started on that date in your browser's local timezone**. 
 - Gains use **#05ff00** and losses use **#ef0000**. Larger absolute changes use a stronger color on a fixed scale shared by all weeks.
