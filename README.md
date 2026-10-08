@@ -1,6 +1,6 @@
 # FaceIT simplified
 
-Version 0.2.2 adds a seven-day Elo calendar after the skill-rating panel, replacing the league-registration promotion. Missions and the entire Ladders section remain hidden. The extension popup has one switch to restore the original page.
+Version 0.2.2 adds a seven-day Elo calendar after the skill-rating panel. Every other widget in that row (missions, campaigns, league registration, season passes, and any promotion FACEIT adds later) is hidden automatically, as is the entire Ladders section. The extension popup has one switch to restore the original page.
 
 ## Elo calendar
 
@@ -54,7 +54,7 @@ It uses the existing FACEIT session; no password or API key is needed. The playe
 
 Seventeen focused data checks passed, covering the supplied +41 example, start-date/timezone grouping, losses, neutral days, overlapping histories, missing Elo, color intensity, DST/calendar boundaries, progressive loading, partial days, capped responses, empty histories, cancellation, and malformed responses. JavaScript syntax and manifest resources were checked.
 
-The hiding selectors were checked against the signed-in page. The actual Chrome network response was inspected: the HTTP API returns snake_case fields, whereas the supplied sample used camelCase. Version 0.2.1 accepts both formats, with regression checks for the +41 example, continuation tokens, and zero Elo. The updated version still needs an end-to-end check after installation in Chrome.
+The hiding selectors were checked against the signed-in page. The skill-rating row is hidden by allowlist: only the slot containing the Elo widget and the calendar stay visible, so new banners need no selector changes. The actual Chrome network response was inspected: the HTTP API returns snake_case fields, whereas the supplied sample used camelCase. Version 0.2.1 accepts both formats, with regression checks for the +41 example, continuation tokens, and zero Elo. The updated version still needs an end-to-end check after installation in Chrome.
 
 FACEIT can change its private API or rename page components. If that happens, update the endpoints/response handling in `elo-calendar.js` and `elo-core.js`, or the component selectors in `matchmaking.css` and `elo-calendar.js`.
 

@@ -2,20 +2,19 @@
    translated labels, and season-specific text. New matching elements are
    handled by CSS automatically, including content loaded after navigation. */
 
-/* Hide the whole mission slot, including its decorative stack and spacing. */
-html[data-faceit-simplified="on"] [class*="Header__ComponentContainer-"]:has(> [class*="WidgetStack__Container-"] > span > section[class*="styles__MissionContainer-"]),
-/* Hide the entire league promotion slot, including the deadline label. */
-html[data-faceit-simplified="on"] [class*="Header__ComponentContainer-"]:has(> a[class*="LeagueRegistrationWidgetView-"]),
-/* Keep direct targets covered if FACEIT changes the surrounding layout. */
-html[data-faceit-simplified="on"] section[class*="styles__MissionContainer-"],
-html[data-faceit-simplified="on"] a[class*="LeagueRegistrationWidgetView-"],
+/* The header row keeps only the skill-rating slot and the Elo calendar.
+   Every other slot (missions, campaigns, leagues, season passes, and any
+   promotion FACEIT adds later) is hidden without naming it. The row is the
+   container whose direct slot holds the Elo widget, so other "Header"
+   components on the page are never affected. */
+html[data-faceit-simplified="on"] [class*="Header__Container-"]:has(> [class*="Header__ComponentContainer-"] div[class*="EloWidget-"][class*="__widgetContainer"]) > :not(:has(div[class*="EloWidget-"][class*="__widgetContainer"])):not(#fsi-elo-calendar),
 /* The Ladders heading, View all link, and all cards form one section. */
 html[data-faceit-simplified="on"] div[class*="Ladders__HeaderContainer-"],
 html[data-faceit-simplified="on"] div[class*="Ladders__Container-"] {
   display: none !important;
 }
 
-/* The calendar takes the league widget's place after the skill-rating slot. */
+/* The calendar sits after the skill-rating slot and fills the rest of the row. */
 html[data-faceit-simplified="on"] #fsi-elo-calendar {
   display: block;
   flex: 1 1 360px;
