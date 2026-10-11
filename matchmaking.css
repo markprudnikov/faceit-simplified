@@ -2,6 +2,25 @@
    translated labels, and season-specific text. New matching elements are
    handled by CSS automatically, including content loaded after navigation. */
 
+html[data-faceit-simplified="on"] [data-fsi-ac-banner] {
+  display: none !important;
+}
+
+.fsi-anticheat-status {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  color: #777;
+}
+
+.fsi-anticheat-status[data-state="on"] {
+  color: #ff5500;
+}
+
+html:not([data-faceit-simplified="on"]) .fsi-anticheat-status {
+  display: none;
+}
+
 /* The header row keeps only the skill-rating slot and the Elo calendar.
    Every other slot (missions, campaigns, leagues, season passes, and any
    promotion FACEIT adds later) is hidden without naming it. The row is the

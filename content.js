@@ -19,6 +19,7 @@
       root.removeAttribute(attribute);
     }
     globalThis.FaceitSimplifiedCalendar.update(active);
+    globalThis.FaceitSimplifiedPartyStatus.update(active);
     globalThis.FaceitSimplifiedToggle.update(loaded && matchmaking, enabled);
   }
 

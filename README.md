@@ -15,8 +15,7 @@ header badges remain visible.
 
 The layout restyles FACEIT's existing elements, preserving their event handlers
 and popovers. It does not fetch party data, clone members, or implement queue
-eligibility. The original matchmaking status banner, including Anti-Cheat and
-cooldown messages, remains under FACEIT's control. Turning Simplified off restores
+eligibility. A shield immediately after the country flag mirrors FACEIT’s Anti-Cheat status: orange when on, gray when off. The signed-in player is matched by the session nickname; other members use recognizable native card indicators, with unknown status shown gray and labelled unavailable. Only the exact English “Please run Anti-Cheat” panel with the native download action is hidden. Cooldowns and other errors remain visible, and FACEIT still controls whether Find Match is enabled. The header’s original Anti-Cheat control remains available for download/launch actions. Turning Simplified off restores
 the original party layout.
 
 The implementation targets the observed player-card component names and known
@@ -72,7 +71,7 @@ The calendar makes authenticated, same-origin requests to:
 - `GET /api/users/v1/sessions/me` to obtain the current player's ID.
 - `POST /api/statistics/v1/cs2/player-profile-history` to read match dates and Elo changes. Its JSON body contains the player ID, `limit: 30`, empty CS2 filter arrays, and an `offsetToken` on subsequent pages. This POST is a history query; it does not change matches or the account.
 
-It uses the existing FACEIT session; no password or API key is needed. The player ID is discovered dynamically, never hardcoded. The extension neither saves nor displays the session response's personal profile fields. Match data stays in memory and is cleared when the extension is switched off or you leave matchmaking. The only persistent extension preference is the on/off switch. There is no telemetry, external backend, or additional permission beyond local storage.
+It uses the existing FACEIT session; no password or API key is needed. The player ID is discovered dynamically, never hardcoded. The extension neither saves nor displays the session response's personal profile fields. Match data stays in memory and is cleared when the extension is switched off or you leave matchmaking. The party indicator also reads the session endpoint to identify the signed-in nickname. It retains only that nickname in memory while enabled and makes no Anti-Cheat service requests. The only persistent extension preference is the on/off switch. There is no telemetry, external backend, or additional permission beyond local storage.
 
 ## Validation and maintenance
 
