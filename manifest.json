@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FaceIT simplified",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "A cleaner FACEIT matchmaking page with a seven-day Elo calendar and less clutter.",
   "minimum_chrome_version": "120",
   "permissions": ["storage"],

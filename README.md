@@ -1,6 +1,6 @@
 # FaceIT simplified
 
-Version 0.2.2 adds a seven-day Elo calendar after the skill-rating panel. Every other widget in that row (missions, campaigns, league registration, season passes, and any promotion FACEIT adds later) is hidden automatically, as is the entire Ladders section. A **Simplified** switch next to the anti-cheat icon in the Play header, and the same switch in the extension popup, restore the original page. Both share one locally stored setting.
+Version 0.3.0 adds compact party rows with Anti-Cheat indicators and fixes loading earlier weeks in the seven-day Elo calendar. The redundant invite tooltip and run-Anti-Cheat banner are hidden in simplified mode. Every other widget in the skill-rating row (missions, campaigns, league registration, season passes, and any promotion FACEIT adds later) is hidden automatically, as is the entire Ladders section. A **Simplified** switch next to the anti-cheat icon in the Play header, and the same switch in the extension popup, restore the original page. Both share one locally stored setting.
 
 ## Compact party
 
