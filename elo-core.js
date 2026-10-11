@@ -88,7 +88,8 @@
       this.loadPage = loadPage;
       this.timeZone = timeZone;
       this.rows = new Map();
-      this.nextLimit = 30;
+      this.nextToken = null;
+      this.seenTokens = new Set();
       this.started = false;
       this.exhausted = false;
       this.oldestDay = null;
@@ -104,19 +105,19 @@
       let pages = 0;
       while (!this.covers(day) && !this.exhausted && pages < maxPages) {
         signal?.throwIfAborted();
-        // The supplied API contract supports limit. Grow the recent-history
-        // window only when needed; do not guess an undocumented cursor parameter.
-        const page = await this.loadPage(this.nextLimit, signal);
+        const page = await this.loadPage(this.nextToken, signal);
         signal?.throwIfAborted();
         const oldSize = this.rows.size;
         const newRows = new Map(this.rows);
         for (const row of page.rows) newRows.set(row.key, row);
-        if (this.started && page.nextToken && newRows.size === oldSize) {
+        if (page.nextToken && (this.seenTokens.has(page.nextToken) ||
+            (this.started && newRows.size === oldSize) || page.rows.length === 0)) {
           throw new Error("FACEIT did not return older matches. This day is still incomplete.");
         }
         this.rows = newRows;
         this.started = true;
-        this.nextLimit += 30;
+        this.nextToken = page.nextToken;
+        if (page.nextToken) this.seenTokens.add(page.nextToken);
         this.exhausted = !page.nextToken;
         for (const row of page.rows) {
           const key = dayKey(row.started, this.timeZone);

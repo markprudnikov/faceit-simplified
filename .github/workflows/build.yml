@@ -21,6 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check Elo history pagination
+        run: node --test .github/scripts/elo-core.test.mjs
+
       - name: Read version
         id: version
         run: echo "version=$(jq -r .version manifest.json)" >> "$GITHUB_OUTPUT"

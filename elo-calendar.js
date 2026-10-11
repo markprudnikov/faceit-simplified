@@ -42,12 +42,14 @@
     @media(pointer:coarse){.nav{min-width:36px;height:36px}.text-button{min-height:36px}}
   `;
 
-  async function requestJSON(path, signal) {
+  async function requestJSON(path, signal, body) {
     let response;
     try {
       response = await fetch(new URL(path, location.origin), {
         credentials: "same-origin", cache: "no-store", redirect: "error",
-        headers: { Accept: "application/json" },
+        method: body === undefined ? "GET" : "POST",
+        headers: { Accept: "application/json", ...(body === undefined ? {} : { "Content-Type": "application/json" }) },
+        ...(body === undefined ? {} : { body: JSON.stringify(body) }),
         signal: AbortSignal.any([signal, AbortSignal.timeout(15000)])
       });
     } catch (error) {
@@ -210,9 +212,13 @@
             throw new Error("Sign in to FACEIT to see your Elo.");
           }
           // Keep only the ID; no profile details are saved or displayed.
-          history = new Core.History(async (limit, pageSignal) => {
-            const path = `/api/statistics/v1/cs2/players/${encodeURIComponent(id)}/match-rounds?limit=${limit}`;
-            return Core.readPage(await requestJSON(path, pageSignal), id);
+          history = new Core.History(async (offsetToken, pageSignal) => {
+            // Match the site's Track/History pagination: fixed-size POST pages,
+            // passing the server cursor unchanged. Empty filters retain all CS2 Elo.
+            const body = { userId: id, limit: 30,
+              cs2: { competitionIds: [], gameModes: [], maps: [] },
+              ...(offsetToken ? { offsetToken } : {}) };
+            return Core.readPage(await requestJSON("/api/statistics/v1/cs2/player-profile-history", pageSignal, body), id);
           }, timeZone);
         }
         await history.ensure(week, signal);

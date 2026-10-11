@@ -41,11 +41,11 @@ For the supplied September 26, 2026 example in Europe/Berlin: **9 matches, +138 
 
 ## Loading earlier history
 
-The calendar begins with the most recent 30 matches. It requests larger recent-history windows (`limit=60`, `90`, and so on) only when the visible week requires more data. Overlapping matches are deduplicated, and previously loaded weeks are reused in memory.
+The calendar begins with the most recent 30 matches from FACEIT’s Track/History endpoint. When an earlier week needs more data, it requests another page of 30 using the response’s `nextOffsetToken` as the next request’s `offsetToken`. The page size stays fixed. Overlapping matches are deduplicated, and previously loaded weeks are reused in memory. Empty competition, game-mode, and map filters preserve the calendar’s existing scope of all CS2 match Elo.
 
 The oldest fetched day is considered incomplete until a strictly earlier day has been retrieved or FACEIT reports the end of history. This handles both 30 matches in one day and 30 matches spread over several weeks.
 
-Each action makes at most four history requests. If more are needed, use **Load more matches**. If FACEIT caps the results, blocks a request, or returns an unexpected response, the widget reports the problem and keeps uncovered days marked incomplete. The larger-limit behavior still needs verification in a signed-in Chrome session.
+Each action makes at most four history requests. If more are needed, use **Load more matches**. Failed requests retry the same cursor. Repeated cursors, empty pages with a continuation token, and pages that make no progress are rejected without advancing coverage. Errors keep uncovered days marked incomplete.
 
 ## Install or update in Chrome
 
@@ -67,18 +67,20 @@ Changes apply to `/matchmaking` and localized versions such as `/en/matchmaking`
 
 The content script is available on `faceit.com` and `www.faceit.com` so it also works when FACEIT navigates without a full reload. It activates only on the matchmaking home route. Existing Elo, party, readiness, and queue controls retain their original behavior.
 
-The calendar makes authenticated, same-origin GET requests to:
+The calendar makes authenticated, same-origin requests to:
 
-- `/api/users/v1/sessions/me` to obtain the current player's ID.
-- `/api/statistics/v1/cs2/players/{id}/match-rounds?limit={count}` to obtain match dates and Elo changes.
+- `GET /api/users/v1/sessions/me` to obtain the current player's ID.
+- `POST /api/statistics/v1/cs2/player-profile-history` to read match dates and Elo changes. Its JSON body contains the player ID, `limit: 30`, empty CS2 filter arrays, and an `offsetToken` on subsequent pages. This POST is a history query; it does not change matches or the account.
 
 It uses the existing FACEIT session; no password or API key is needed. The player ID is discovered dynamically, never hardcoded. The extension neither saves nor displays the session response's personal profile fields. Match data stays in memory and is cleared when the extension is switched off or you leave matchmaking. The only persistent extension preference is the on/off switch. There is no telemetry, external backend, or additional permission beyond local storage.
 
 ## Validation and maintenance
 
+On October 11, 2026, browser inspection reproduced HTTP 403 for the old `match-rounds?limit=60` call. FACEIT’s own Track/History page successfully used `POST player-profile-history` with a fixed limit of 30 and `offsetToken` pagination. Its date filter uses `cs2.from`; the calendar currently keeps a continuous cached history rather than applying that filter. Eight regression checks in `.github/scripts/elo-core.test.mjs` cover cursor progression, split days, deduplication, retries, repeated tokens, bounded loading, exhaustion, cancellation, response formats, and local dates. Run them with `node --test .github/scripts/elo-core.test.mjs`. After reloading the extension, the live calendar loaded September 28–October 4 completely (20 matches, +31 Elo), September 21–27 (16 matches, −25 Elo), and September 14–20 (11 matches, +84 Elo). September 26 retained the known 9-match, +41 Elo result.
+
 Seventeen focused data checks passed, covering the supplied +41 example, start-date/timezone grouping, losses, neutral days, overlapping histories, missing Elo, color intensity, DST/calendar boundaries, progressive loading, partial days, capped responses, empty histories, cancellation, and malformed responses. JavaScript syntax and manifest resources were checked.
 
-The hiding selectors were checked against the signed-in page. The skill-rating row is hidden by allowlist: only the slot containing the Elo widget and the calendar stay visible, so new banners need no selector changes. The actual Chrome network response was inspected: the HTTP API returns snake_case fields, whereas the supplied sample used camelCase. Version 0.2.1 accepts both formats, with regression checks for the +41 example, continuation tokens, and zero Elo. The updated version still needs an end-to-end check after installation in Chrome.
+The hiding selectors were checked against the signed-in page. The skill-rating row is hidden by allowlist: only the slot containing the Elo widget and the calendar stay visible, so new banners need no selector changes. The actual Chrome network response was inspected: the HTTP API returns snake_case fields, whereas the supplied sample used camelCase. Version 0.2.1 accepts both formats, with regression checks for the +41 example, continuation tokens, and zero Elo. The cursor-pagination update was subsequently verified in signed-in Chrome as described above.
 
 FACEIT can change its private API or rename page components. If that happens, update the endpoints/response handling in `elo-calendar.js` and `elo-core.js`, or the component selectors in `matchmaking.css` and `elo-calendar.js`.
 
