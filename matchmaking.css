@@ -35,3 +35,165 @@ html:not([data-faceit-simplified="on"]) #fsi-elo-calendar {
   align-items: center;
   gap: 4px;
 }
+
+/* Keep FACEIT's mounted party controls and event handlers. Scope every rule to
+   the party section: player cards elsewhere (and the play-bar errors) are untouched. */
+html[data-faceit-simplified="on"] section:has(> [class*="styles__CardContainer-"] [class*="Party__StyledPlayerCard-"]) {
+  height: auto !important;
+  min-height: 0 !important;
+  gap: 12px !important;
+  padding-block: 8px !important;
+}
+
+html[data-faceit-simplified="on"] section:has([class*="Party__StyledPlayerCard-"]) > [class*="styles__PartyControlContainer-"]:empty {
+  display: none !important;
+}
+
+html[data-faceit-simplified="on"] section > [class*="styles__CardContainer-"]:has([class*="Party__StyledPlayerCard-"]) {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-start !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+
+  & > [class*="Party__StyledPlayerCard-"],
+  & > [class*="RedirectCard__Container-"] {
+    flex: 0 0 calc((100% - 16px) / 3) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    order: 0 !important;
+  }
+
+  /* Only collapse known empty invite slots, never pending or occupied cards. */
+  & > [class*="Party__StyledPlayerCard-"]:has([class*="styles__AddContainer-"]):not(:has([class*="styles__Nickname-"])) {
+    flex: 0 0 56px !important;
+    order: 1 !important;
+  }
+
+  & > [class*="Party__StyledPlayerCard-"]:has([class*="styles__AddContainer-"]):not(:has([class*="styles__Nickname-"])) ~ [class*="Party__StyledPlayerCard-"]:has([class*="styles__AddContainer-"]):not(:has([class*="styles__Nickname-"])) {
+    display: none !important;
+  }
+
+  & > [class*="RedirectCard__Container-"] {
+    flex: 0 0 56px !important;
+    order: 2 !important;
+  }
+
+  & [class*="styles__PopoverAnchorContainer-"],
+  & [class*="styles__PopoverAnchorContainer-"] > span,
+  & [class*="styles__StyledTooltip-"] {
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  & [data-playercard] {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    aspect-ratio: auto !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+    border-radius: 8px !important;
+  }
+
+  /* Preserve meaningful header badges/actions above their member row. */
+  & [class*="styles__StyledHeader-"] {
+    position: static !important;
+    width: 100% !important;
+  }
+
+  & [class*="styles__StyledHeader-"]:not(:has(svg, img, button, [role="button"])) {
+    display: none !important;
+  }
+
+  & [data-playercard] > div:has(> [class*="Avatar__AvatarHolder-"]) {
+    flex: 0 0 32px !important;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+  }
+
+  & [class*="Avatar__AvatarHolder-"] {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+
+  & [data-playercard] > div:has(> [class*="styles__Nickname-"]) {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+    justify-content: flex-start !important;
+  }
+
+  & [class*="styles__Nickname-"] {
+    min-width: 0 !important;
+    font-size: 14px !important;
+  }
+
+  & [class*="Tag__Container-"]:has([class*="styles__EloText-"]) {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+  }
+
+  & [class*="styles__AddContainer-"],
+  & [class*="styles__AddContainer-"] > i,
+  & [class*="styles__AddContainer-"] svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  & [data-playercard]:has(> [class*="styles__AddContainer-"])::after {
+    content: "Invite";
+  }
+
+  /* Keep action names available to accessibility while showing square icons. */
+  & [data-playercard]:has(> [class*="styles__AddContainer-"])::after,
+  & [class*="RedirectCard__FindClansText-"] {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+  }
+
+  & [data-playercard]:has(> [class*="styles__AddContainer-"]),
+  & [class*="RedirectCard__Container-"] [data-playercard] {
+    justify-content: center !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  @media (max-width: 1100px) {
+    & > [class*="Party__StyledPlayerCard-"]:not(:has([class*="styles__AddContainer-"])) {
+      flex-basis: calc((100% - 8px) / 2) !important;
+    }
+  }
+
+  @media (max-width: 700px) {
+    & > [class*="Party__StyledPlayerCard-"]:not(:has([class*="styles__AddContainer-"])) {
+      flex-basis: 100% !important;
+    }
+  }
+
+  & [data-playercard]:focus-visible,
+  & [aria-haspopup]:focus-visible {
+    outline: 2px solid #ff5500 !important;
+    outline-offset: 3px !important;
+  }
+}

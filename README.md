@@ -2,6 +2,30 @@
 
 Version 0.2.2 adds a seven-day Elo calendar after the skill-rating panel. Every other widget in that row (missions, campaigns, league registration, season passes, and any promotion FACEIT adds later) is hidden automatically, as is the entire Ladders section. A **Simplified** switch next to the anti-cheat icon in the Play header, and the same switch in the extension popup, restore the original page. Both share one locally stored setting.
 
+## Compact party
+
+Simplified mode turns matchmaking's tall party cards into compact horizontal
+member rows with a small avatar, nickname, country, skill level, and Elo. Each row
+is 56 pixels high, with three members across on wide screens, two at medium
+widths, and one on narrow screens. Repeated empty invite slots collapse to one
+square **Invite** control; **Find Parties** is a matching square search button.
+Both retain accessible names. Empty party
+controls no longer reserve a blank row, while populated controls and member
+header badges remain visible.
+
+The layout restyles FACEIT's existing elements, preserving their event handlers
+and popovers. It does not fetch party data, clone members, or implement queue
+eligibility. The original matchmaking status banner, including Anti-Cheat and
+cooldown messages, remains under FACEIT's control. Turning Simplified off restores
+the original party layout.
+
+The implementation targets the observed player-card component names and known
+empty-slot markup. Multi-member parties, pending invitations, leader controls,
+and active cooldowns still need validation in those live states. A local fixture
+using captured markup and computed styles verified 56-pixel member/action heights
+and the three-plus-two arrangement with five sample members; this does not verify
+FACEIT's multi-member interactions.
+
 ## Elo calendar
 
 - **Elo gain** heading, with the displayed week’s net Elo immediately after its date range, followed by the number of matches played that week. The current week shows its totals so far. Incomplete weeks show `… Elo` and `… matches`.
