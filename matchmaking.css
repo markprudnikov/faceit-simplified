@@ -179,6 +179,11 @@ html[data-faceit-simplified="on"] section > [class*="styles__CardContainer-"]:ha
     content: "Invite";
   }
 
+  /* The compact plus is already labelled Invite; omit its native hover tip. */
+  & [class*="Tooltip__Holder-"]:has([data-playercard] > [class*="styles__AddContainer-"]) > [role="tooltip"] {
+    display: none !important;
+  }
+
   /* Keep action names available to accessibility while showing square icons. */
   & [data-playercard]:has(> [class*="styles__AddContainer-"])::after,
   & [class*="RedirectCard__FindClansText-"] {
