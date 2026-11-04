@@ -1,6 +1,6 @@
 # FaceIT simplified
 
-Version 0.3.0 adds compact party rows with Anti-Cheat indicators and fixes loading earlier weeks in the seven-day Elo calendar. The redundant invite tooltip and run-Anti-Cheat banner are hidden in simplified mode. Every other widget in the skill-rating row (missions, campaigns, league registration, season passes, and any promotion FACEIT adds later) is hidden automatically, as is the entire Ladders section. A **Simplified** switch next to the anti-cheat icon in the Play header, and the same switch in the extension popup, restore the original page. Both share one locally stored setting.
+Version 0.3.1 restores banner hiding and the seven-day Elo calendar after FACEIT renamed its Elo widget, and also hides the run-Anti-Cheat warning card below the ladders. Version 0.3.0 added compact party rows with Anti-Cheat indicators and fixed loading earlier weeks in the Elo calendar. The redundant invite tooltip and run-Anti-Cheat banner are hidden in simplified mode. Every other widget in the skill-rating row (missions, campaigns, league registration, season passes, and any promotion FACEIT adds later) is hidden automatically, as is the entire Ladders section. A **Simplified** switch next to the anti-cheat icon in the Play header, and the same switch in the extension popup, restore the original page. Both share one locally stored setting.
 
 ## Compact party
 
@@ -15,7 +15,7 @@ header badges remain visible.
 
 The layout restyles FACEIT's existing elements, preserving their event handlers
 and popovers. It does not fetch party data, clone members, or implement queue
-eligibility. A shield immediately after the country flag mirrors FACEIT’s Anti-Cheat status: orange when on, gray when off. The signed-in player is matched by the session nickname; other members use recognizable native card indicators, with unknown status shown gray and labelled unavailable. Only the exact English “Please run Anti-Cheat” panel with the native download action is hidden. Cooldowns and other errors remain visible, and FACEIT still controls whether Find Match is enabled. The header’s original Anti-Cheat control remains available for download/launch actions. Turning Simplified off restores
+eligibility. A shield immediately after the country flag mirrors FACEIT’s Anti-Cheat status: orange when on, gray when off. The signed-in player is matched by the session nickname; other members use recognizable native card indicators, with unknown status shown gray and labelled unavailable. Only the exact English “Please run Anti-Cheat” messages are hidden: the play-bar panel with the native download action and the warning card after the ladders. Cooldowns and other errors remain visible, and FACEIT still controls whether Find Match is enabled. The header’s original Anti-Cheat control remains available for download/launch actions. Turning Simplified off restores
 the original party layout.
 
 The implementation targets the observed player-card component names and known
