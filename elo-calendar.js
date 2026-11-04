@@ -42,15 +42,22 @@
     @media(pointer:coarse){.nav{min-width:36px;height:36px}.text-button{min-height:36px}}
   `;
 
+  const REQUEST_TIMEOUT_MS = 15000;
+  const AUTO_REFRESH_MS = 300000;
+
   async function requestJSON(path, signal, body) {
     let response;
     try {
       response = await fetch(new URL(path, location.origin), {
-        credentials: "same-origin", cache: "no-store", redirect: "error",
+        credentials: "same-origin",
+        cache: "no-store",
+        redirect: "error",
         method: body === undefined ? "GET" : "POST",
-        headers: { Accept: "application/json", ...(body === undefined ? {} : { "Content-Type": "application/json" }) },
+        headers: body === undefined
+          ? { Accept: "application/json" }
+          : { Accept: "application/json", "Content-Type": "application/json" },
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-        signal: AbortSignal.any([signal, AbortSignal.timeout(15000)])
+        signal: AbortSignal.any([signal, AbortSignal.timeout(REQUEST_TIMEOUT_MS)])
       });
     } catch (error) {
       if (signal.aborted) throw error;
@@ -256,7 +263,7 @@
           if (followingCurrentWeek) week = Core.weekStart(today);
           render();
         }
-        if (!busy && document.visibilityState !== "hidden" && Date.now() - lastRefresh > 300000) load(true);
+        if (!busy && document.visibilityState !== "hidden" && Date.now() - lastRefresh > AUTO_REFRESH_MS) load(true);
       },
       destroy() {
         alive = false;

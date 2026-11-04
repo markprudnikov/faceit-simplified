@@ -25,6 +25,8 @@
     document.querySelectorAll("[data-fsi-ac-banner]").forEach(el => el.removeAttribute("data-fsi-ac-banner"));
   }
 
+  const REQUEST_TIMEOUT_MS = 15000;
+
   function update(active) {
     if (!active) { clear(); return; }
     // Resolve only the signed-in nickname, so the global Anti-Cheat indicator is
@@ -34,8 +36,9 @@
       const request = new AbortController();
       controller = request;
       fetch(new URL("/api/users/v1/sessions/me", location.origin), {
-        credentials: "same-origin", headers: { Accept: "application/json" },
-        signal: AbortSignal.any([request.signal, AbortSignal.timeout(15000)])
+        credentials: "same-origin",
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.any([request.signal, AbortSignal.timeout(REQUEST_TIMEOUT_MS)])
       }).then(response => response.ok ? response.json() : null).then(body => {
         if (!request.signal.aborted && typeof body?.payload?.nickname === "string") nickname = body.payload.nickname;
       }).catch(() => { /* An unknown status stays gray. */ });

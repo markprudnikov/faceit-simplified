@@ -48,6 +48,8 @@
     window.navigation.addEventListener("currententrychange", updatePage);
   }
 
+  const POLL_INTERVAL_MS = 500;
+
   // A pathname-only fallback covers SPA routers without observing the whole DOM.
-  window.setInterval(updatePage, 500);
+  window.setInterval(updatePage, POLL_INTERVAL_MS);
 })();

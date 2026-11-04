@@ -27,6 +27,9 @@ html:not([data-faceit-simplified="on"]) .fsi-anticheat-status {
    container whose direct slot holds the Elo widget, so other "Header"
    components on the page are never affected. */
 html[data-faceit-simplified="on"] [class*="Header__Container-"]:has(> [class*="Header__ComponentContainer-"] div[class*="EloWidget-"][class*="__widgetContainer"]) > :not(:has(div[class*="EloWidget-"][class*="__widgetContainer"])):not(#fsi-elo-calendar),
+/* FACEIT may wrap new banners in extra containers or place them in sibling
+   elements. Hide any ComponentContainer without the Elo widget, at any depth. */
+html[data-faceit-simplified="on"] [class*="Header__Container-"]:has(> [class*="Header__ComponentContainer-"] div[class*="EloWidget-"][class*="__widgetContainer"]) [class*="Header__ComponentContainer-"]:not(:has(div[class*="EloWidget-"][class*="__widgetContainer"])),
 /* The Ladders heading, View all link, and all cards form one section. */
 html[data-faceit-simplified="on"] div[class*="Ladders__HeaderContainer-"],
 html[data-faceit-simplified="on"] div[class*="Ladders__Container-"] {
