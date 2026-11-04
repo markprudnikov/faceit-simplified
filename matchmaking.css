@@ -25,11 +25,15 @@ html:not([data-faceit-simplified="on"]) .fsi-anticheat-status {
    Every other slot (missions, campaigns, leagues, season passes, and any
    promotion FACEIT adds later) is hidden without naming it. The row is the
    container whose direct slot holds the Elo widget, so other "Header"
-   components on the page are never affected. */
-html[data-faceit-simplified="on"] [class*="Header__Container-"]:has(> [class*="Header__ComponentContainer-"] div[class*="EloWidget-"][class*="__widgetContainer"]) > :not(:has(div[class*="EloWidget-"][class*="__widgetContainer"])):not(#fsi-elo-calendar),
+   components on the page are never affected. The Elo widget moved from a
+   styled component (EloWidget-…__widgetContainer) to CSS modules, which keep
+   only a hashed prefix before the local name (TJV7YG_widgetContainer), so
+   both forms are matched. */
+html[data-faceit-simplified="on"] [class*="Header__Container-"]:has(> [class*="Header__ComponentContainer-"] :is(div[class*="EloWidget-"][class*="__widgetContainer"], [class*="_widgetContainer"] [class*="_eloRow"])) > :not(:has(:is(div[class*="EloWidget-"][class*="__widgetContainer"], [class*="_widgetContainer"] [class*="_eloRow"]))):not(#fsi-elo-calendar),
 /* FACEIT may wrap new banners in extra containers or place them in sibling
-   elements. Hide any ComponentContainer without the Elo widget, at any depth. */
-html[data-faceit-simplified="on"] [class*="Header__Container-"]:has(> [class*="Header__ComponentContainer-"] div[class*="EloWidget-"][class*="__widgetContainer"]) [class*="Header__ComponentContainer-"]:not(:has(div[class*="EloWidget-"][class*="__widgetContainer"])),
+   elements. Hide any ComponentContainer without the Elo widget, at any depth.
+   The calendar can borrow a ComponentContainer class, so it is excluded. */
+html[data-faceit-simplified="on"] [class*="Header__Container-"]:has(> [class*="Header__ComponentContainer-"] :is(div[class*="EloWidget-"][class*="__widgetContainer"], [class*="_widgetContainer"] [class*="_eloRow"])) [class*="Header__ComponentContainer-"]:not(:has(:is(div[class*="EloWidget-"][class*="__widgetContainer"], [class*="_widgetContainer"] [class*="_eloRow"]))):not(#fsi-elo-calendar),
 /* The Ladders heading, View all link, and all cards form one section. */
 html[data-faceit-simplified="on"] div[class*="Ladders__HeaderContainer-"],
 html[data-faceit-simplified="on"] div[class*="Ladders__Container-"] {

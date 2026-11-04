@@ -103,7 +103,8 @@
 
     function mount() {
       if (host.isConnected) return true;
-      const elo = document.querySelector('div[class*="EloWidget-"][class*="__widgetContainer"]');
+      // Styled-component and CSS-module forms of the Elo widget (see matchmaking.css).
+      const elo = document.querySelector(':is(div[class*="EloWidget-"][class*="__widgetContainer"], [class*="_widgetContainer"] [class*="_eloRow"])');
       const anchor = elo?.closest('[class*="Header__ComponentContainer-"]');
       if (!anchor?.parentElement?.matches('[class*="Header__Container-"]')) return false;
       const leagueSlot = anchor.parentElement.querySelector('[class*="Header__ComponentContainer-"]:has(> a[class*="LeagueRegistrationWidgetView-"])');

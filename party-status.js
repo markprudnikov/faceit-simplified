@@ -80,14 +80,17 @@
       }
     }
 
-    // Suppress only the observed run-Anti-Cheat message. Recheck reused panels
-    // each update so a later cooldown or different error becomes visible again.
-    const panels = document.querySelectorAll('[data-testid="error-panel-container"], [data-fsi-ac-banner]');
+    // Suppress only the observed run-Anti-Cheat messages: the play-bar error
+    // panel and the warning card after the ladders. Recheck reused panels each
+    // update so a later cooldown or different error becomes visible again.
+    const panels = document.querySelectorAll('[data-testid="error-panel-container"], [class*="Mobile__Container-"], [data-fsi-ac-banner]');
     for (const panel of panels) {
       const content = panel.querySelector('[class*="ErrorPanel__Content-"]')?.textContent.trim();
-      const hide = panel.closest('[class*="Matchmaking__PlayBarContainer-"]') &&
+      const playBar = panel.closest('[class*="Matchmaking__PlayBarContainer-"]') &&
         content === "Please run Anti-Cheat" &&
         panel.querySelector('a[href^="https://anticheat-client.faceit-cdn.net/"]');
+      const card = panel.querySelector('[class*="Mobile__Content-"]')?.textContent.trim() === "Please run Anti-Cheat";
+      const hide = playBar || card;
       if (hide) {
         if (!panel.hasAttribute("data-fsi-ac-banner")) panel.setAttribute("data-fsi-ac-banner", "");
       } else panel.removeAttribute("data-fsi-ac-banner");
